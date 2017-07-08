@@ -64,3 +64,5 @@ class JobboleArticleItem(scrapy.Item):
         output_processor=Join(", ")
     )
     content = scrapy.Field()
+    front_img_url = scrapy.Field()
+    front_img_path = scrapy.Field()

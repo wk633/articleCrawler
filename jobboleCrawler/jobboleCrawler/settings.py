@@ -9,6 +9,8 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import os
+
 BOT_NAME = 'jobboleCrawler'
 
 SPIDER_MODULES = ['jobboleCrawler.spiders']
@@ -66,9 +68,11 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'jobboleCrawler.pipelines.JobbolecrawlerPipeline': 300,
-   'jobboleCrawler.pipelines.MysqlPipeline': 1,
-
+   # 'jobboleCrawler.pipelines.MysqlPipeline': 2,
+   'jobboleCrawler.pipelines.ArticleImagesPipeline': 1
 }
+
+IMAGES_STORE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'images')
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
