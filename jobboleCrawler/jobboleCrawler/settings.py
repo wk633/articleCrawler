@@ -68,7 +68,7 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'jobboleCrawler.pipelines.JobbolecrawlerPipeline': 300,
-   # 'jobboleCrawler.pipelines.MysqlPipeline': 2,
+   'jobboleCrawler.pipelines.MysqlPipeline': 2,
    'jobboleCrawler.pipelines.ArticleImagesPipeline': 1
 }
 
