@@ -2,6 +2,7 @@
 import scrapy
 from scrapy.http import Request
 from urllib import parse
+import re
 
 # from scrapy.loader import ItemLoader
 from jobboleCrawler.items import ArticleItemLoader
@@ -21,6 +22,13 @@ class JobboleSpider(scrapy.Spider):
             img_url = post_node.css("img::attr(src)").extract_first("");
             post_url = post_node.css("::attr(href)").extract_first("");
             yield Request(url=parse.urljoin(response.url, post_url), callback=self.parse_detail, meta={"front_img_url": img_url})
+
+        next_url = response.css('a.next.page-numbers::attr(href)').extract_first("")
+        if next_url:
+            next_page = int(re.match(r".*?(\d+).*", next_url).group(1))
+            if next_page >= 3: # only crawl first two page
+                return
+            yield Request(url=parse.urljoin(response.url, next_url), callback=self.parse)
 
     def parse_detail(self, response):
 
