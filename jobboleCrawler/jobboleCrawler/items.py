@@ -66,3 +66,8 @@ class JobboleArticleItem(scrapy.Item):
     content = scrapy.Field()
     front_img_url = scrapy.Field()
     front_img_path = scrapy.Field()
+
+    def get_insert_sql(self):
+        insert_sql = """insert into article (title, create_date, url, url_object_id, praise_nums, fav_nums, tag_list, content, front_image_url, front_image_path) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        params = (self['title'], self['create_date'], self['url'], self['url_object_id'], self['praise_nums'], self['fav_nums'], self['tag_list'], self['content'], self['front_img_url'], self['front_img_path'])
+        return (insert_sql, params)

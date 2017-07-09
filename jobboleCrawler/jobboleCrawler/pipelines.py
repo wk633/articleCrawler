@@ -69,9 +69,8 @@ class MysqlAsyncPipeline(object):
         insertion.addErrback = self.error_handler
 
     def insertRow(self, cursor, item):
-        insert_sql = """insert into article (title, create_date, url, url_object_id, praise_nums, fav_nums, tag_list, content, front_image_url, front_image_path) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-
-        cursor.execute(insert_sql, (item['title'], item['create_date'], item['url'], item['url_object_id'], item['praise_nums'], item['fav_nums'], item['tag_list'], item['content'], item['front_img_url'], item['front_img_path']))
+        insert_sql, params = item.get_insert_sql()
+        cursor.execute(insert_sql, params)
         # commit automatically
 
     def error_handler(self, e):
