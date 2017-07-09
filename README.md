@@ -21,6 +21,13 @@ scrapy crawl jobbole
 - override ItemLoader
 - default_output_processor
 - MapCompose, TakeFirst, Join
+- @classmethod
+    - import setting parameters: 
+        - https://stackoverflow.com/questions/14075941/how-to-access-scrapy-settings-from-item-pipeline
+- twisted async
+    - twisted.enterprise.adbapi
+        - https://twistedmatrix.com/documents/15.3.0/core/howto/rdbms.html
+    -
 
 ### Mac OS install mysqlclient error solution
 reference: https://github.com/PyMySQL/mysqlclient-python/issues/169#issuecomment-299778504

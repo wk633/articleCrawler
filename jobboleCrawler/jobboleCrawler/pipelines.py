@@ -8,6 +8,8 @@
 import MySQLdb
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.http import Request
+from MySQLdb.cursors import DictCursor
+from twisted.enterprise import adbapi
 
 class JobbolecrawlerPipeline(object):
     def process_item(self, item, spider):
@@ -41,3 +43,36 @@ class MysqlPipeline(object):
         """
         self.cursor.execute(insert_sql, (item['title'], item['create_date'], item['url'], item['url_object_id'],item['praise_nums'], item['fav_nums'], item['tag_list'], item['content'], item['front_img_url'], item['front_img_path']))
         self.conn.commit()
+
+# save to mysql
+class MysqlAsyncPipeline(object):
+    @classmethod
+    def from_crawler(cls, cralwer):
+        settings = cralwer.settings
+        dbParams = dict(
+            host=settings["MYSQL_HOST"],
+            db=settings["MYSQL_DBNAME"],
+            user=settings["MYSQL_USER"],
+            passwd=settings["MYSQL_PASSWORD"],
+            charset='utf8',
+            cursorclass=DictCursor,
+            use_unicode=True
+        )
+        dbpool = adbapi.ConnectionPool("MySQLdb", **dbParams)
+        return cls(dbpool)
+
+    def __init__(self, dbPool):
+        self.dbPool = dbPool
+
+    def process_item(self, item, spider):
+        insertion = self.dbPool.runInteraction(self.insertRow, item)
+        insertion.addErrback = self.error_handler
+
+    def insertRow(self, cursor, item):
+        insert_sql = """insert into article (title, create_date, url, url_object_id, praise_nums, fav_nums, tag_list, content, front_image_url, front_image_path) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
+        cursor.execute(insert_sql, (item['title'], item['create_date'], item['url'], item['url_object_id'], item['praise_nums'], item['fav_nums'], item['tag_list'], item['content'], item['front_img_url'], item['front_img_path']))
+        # commit automatically
+
+    def error_handler(self, e):
+        print(e)
